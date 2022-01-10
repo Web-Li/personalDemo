@@ -16,5 +16,8 @@
     "morgan": "~1.9.1",
     "nodemon": "^2.0.15",
     "svg-captcha": "^1.4.0"
+  },
+  "devDependencies": {
+    "mysql": "^2.18.1"
   }
 }

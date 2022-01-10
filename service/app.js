@@ -5,9 +5,11 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var session = require('express-session');
 var bodyParser = require('body-parser');
+
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var captchaRouter = require('./routes/captcha');
+var dbdemoRouter = require('./routes/dbdemo');
 
 var app = express();
 
@@ -36,6 +38,8 @@ app.all('*', (req, res, next) => {
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/captcha', captchaRouter);
+app.use('/dbdemo', dbdemoRouter);
+
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
