@@ -1,6 +1,19 @@
 <template>
     <el-form ref="formRef" :model="form" label-width="120px" label-suffix="：" :status-icon="true">
-         <el-form-item>
+        <el-form-item label="输入昵称">
+            <el-input v-model="form.name" style="width: 120px" required></el-input>
+        </el-form-item>
+        <el-form-item label="输入密码">
+            <el-input
+                v-model="form.pass"
+                type="password"
+                aria-autocomplete="false"
+                autocomplete="off"
+                style="width: 120px"
+                required
+            ></el-input>
+        </el-form-item>
+        <el-form-item>
             <span class="captcha" v-html="form.captchaSvg" @click="getCapthca()"></span>
         </el-form-item>
         <el-form-item label="输入验证码">
@@ -15,6 +28,7 @@
 
 <script>
 import { reactive, inject } from 'vue';
+import router from './../router'
 export default {
     name: 'Capthca',
     components: {},
@@ -25,6 +39,8 @@ export default {
         let form = reactive({
             captcha: '',
             captchaSvg: '',
+            name: '',
+            pass: '',
         });
         const getCapthca = () => {
             axios
@@ -38,13 +54,14 @@ export default {
         };
         const onSubmit = () => {
             axios
-                .post(api.captcha, {captcha: form.captcha})
+                .post(api.login, { form })
                 .then(res => {
                     Message({
                         message: res.data.msg,
                         grouping: true,
-                        type: 'success',
+                        type: res.data.code == 200 ? 'success' : 'error',
                     });
+                    router.push('/capthcha')
                 })
                 .catch(err => {
                     Message({

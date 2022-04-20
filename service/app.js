@@ -6,11 +6,14 @@ var logger = require('morgan');
 var session = require('express-session');
 var bodyParser = require('body-parser');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-var captchaRouter = require('./routes/captcha');
-var dbdemoRouter = require('./routes/dbdemo');
-
+var indexRouter = require('./routes/index.js');
+var usersRouter = require('./routes/users.js');
+var captchaRouter = require('./routes/captcha.js');
+var dbdemoRouter = require('./routes/dbdemo.js');
+var registerRouter = require('./routes/register.js');
+var loginRouter = require('./routes/login.js');
+var user = require('./middleware/user');
+var api = require('./routes/api');
 var app = express();
 
 // view engine setup
@@ -22,9 +25,10 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(session({ secret: 'secretKeyDemo' }));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(user);
 app.all('*', (req, res, next) => {
     // google需要配置，否则报错cors error
     res.setHeader('Access-Control-Allow-Credentials', 'true');
@@ -37,10 +41,13 @@ app.all('*', (req, res, next) => {
     next();
 });
 app.use('/', indexRouter);
+// app.use('/api', api.auth);
+app.use('/api/user/:id', api.user);
 app.use('/users', usersRouter);
 app.use('/captcha', captchaRouter);
 app.use('/dbdemo', dbdemoRouter);
-
+app.use('/register', registerRouter);
+app.use('/login', loginRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

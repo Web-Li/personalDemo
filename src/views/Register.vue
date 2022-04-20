@@ -1,5 +1,11 @@
 <template>
     <el-form ref="formRef" :model="form" label-width="120px" label-suffix="：" :status-icon="true">
+        <el-form-item label="输入昵称">
+            <el-input v-model="form.name" style="width: 120px" required></el-input>
+        </el-form-item>
+        <el-form-item label="输入密码">
+            <el-input v-model="form.pass"  type="password" aria-autocomplete="false" autocomplete="off" style="width: 120px" required></el-input>
+        </el-form-item>
          <el-form-item>
             <span class="captcha" v-html="form.captchaSvg" @click="getCapthca()"></span>
         </el-form-item>
@@ -25,6 +31,8 @@ export default {
         let form = reactive({
             captcha: '',
             captchaSvg: '',
+            name: '',
+            pass: ''
         });
         const getCapthca = () => {
             axios
@@ -37,8 +45,10 @@ export default {
                 });
         };
         const onSubmit = () => {
+            let reqObj = JSON.parse(JSON.stringify(form));
+            delete reqObj.captchaSvg;
             axios
-                .post(api.captcha, {captcha: form.captcha})
+                .post(api.register, {form: reqObj})
                 .then(res => {
                     Message({
                         message: res.data.msg,
